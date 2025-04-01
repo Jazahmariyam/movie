@@ -1,0 +1,101 @@
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { FaHeart, FaUser, FaHome } from "react-icons/fa";
+
+const books = [
+  { id: 1, title: "The Alchemist", author: "Paulo Coelho" },
+  { id: 2, title: "1984", author: "George Orwell" },
+];
+
+const movies = [
+  { id: 1, title: "Inception", director: "Christopher Nolan" },
+  { id: 2, title: "Interstellar", director: "Christopher Nolan" },
+];
+
+const Navbar = () => (
+  <nav className="flex justify-between p-4 bg-blue-500 text-white">
+    <Link to="/" className="text-lg font-bold flex items-center">
+      <FaHome className="mr-2" /> Home
+    </Link>
+    <div>
+      <Link to="/favorites" className="mx-2"><FaHeart /></Link>
+      <Link to="/login" className="mx-2"><FaUser /></Link>
+    </div>
+  </nav>
+);
+
+const Home = ({ addToFavorites }) => (
+  <div className="p-4">
+    <h2 className="text-2xl font-bold">Recommended Books</h2>
+    <div className="grid grid-cols-2 gap-4">
+      {books.map((book) => (
+        <div key={book.id} className="border p-2">
+          <h3>{book.title}</h3>
+          <p>{book.author}</p>
+          <button
+            className="bg-red-500 text-white px-2 py-1 mt-2"
+            onClick={() => addToFavorites(book)}
+          >Add to Favorites</button>
+        </div>
+      ))}
+    </div>
+    <h2 className="text-2xl font-bold mt-4">Recommended Movies</h2>
+    <div className="grid grid-cols-2 gap-4">
+      {movies.map((movie) => (
+        <div key={movie.id} className="border p-2">
+          <h3>{movie.title}</h3>
+          <p>{movie.director}</p>
+          <button
+            className="bg-red-500 text-white px-2 py-1 mt-2"
+            onClick={() => addToFavorites(movie)}
+          >Add to Favorites</button>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const Favorites = ({ favorites }) => (
+  <div className="p-4">
+    <h2 className="text-2xl font-bold">Your Favorites</h2>
+    {favorites.length > 0 ? (
+      <ul>
+        {favorites.map((item, index) => (
+          <li key={index} className="border p-2">{item.title}</li>
+        ))}
+      </ul>
+    ) : (
+      <p>No favorites added yet.</p>
+    )}
+  </div>
+);
+
+const Login = () => (
+  <div className="p-4">
+    <h2 className="text-2xl font-bold">Login</h2>
+    <input type="text" placeholder="Username" className="border p-2 block" />
+    <input type="password" placeholder="Password" className="border p-2 block mt-2" />
+    <button className="bg-blue-500 text-white px-4 py-2 mt-2">Login</button>
+  </div>
+);
+
+const App = () => {
+  const [favorites, setFavorites] = useState([]);
+
+  const addToFavorites = (item) => {
+    setFavorites([...favorites, item]);
+  };
+
+  return (
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home addToFavorites={addToFavorites} />} />
+        <Route path="/favorites" element={<Favorites favorites={favorites} />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
